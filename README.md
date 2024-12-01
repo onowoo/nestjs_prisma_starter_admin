@@ -20,10 +20,6 @@ $ pnpm install
 
 ```
 
-## 启动项目
-
-配置env
-
 ```bash
 #前端地址
 FRONTEND_URL=http://localhost:3333/ 
@@ -39,8 +35,19 @@ MAIL_FROM=noreply@example.com
 ```
 
 ```bash
+#迁移数据库
+$ npx prisma db push
+```
+
+## 启动项目
+
+```bash
 # development
 $ pnpm dev
+
+# 注意：启动后会自动生成一条系统管理员数据和uesr_group数据，请根据需要自行修改，
+path: src/prisma/pjrisma.service.ts
+seedData() 方法，请根据需要自行修改
 
 # production mode
 $ pnpm start:prod
