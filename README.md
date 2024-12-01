@@ -26,7 +26,7 @@ $ pnpm install
 
 ```bash
 #前端地址
-FRONTEND_URL=http://localhost:3200/ 
+FRONTEND_URL=http://localhost:3333/ 
 #数据库设置，支持mysql（数据库类型）://nestjsapi（账号）:nestjsapi（密码）@localhost（host）:3306（端口）/nestjsapi（数据库名）
 DATABASE_URL="mysql://nestjsapi:nestjsapi@localhost:3306/nestjsapi?schema=public"
 #jwt密钥，随机生成个32位字符串替换
