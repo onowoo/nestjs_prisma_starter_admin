@@ -1,0 +1,690 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin_log {
+  id         Int     @id @default(autoincrement()) @db.UnsignedInt
+  admin_id   Int     @default(0) @db.UnsignedInt
+  username   String? @default("") @db.VarChar(30)
+  url        String? @default("") @db.VarChar(1500)
+  title      String? @default("") @db.VarChar(100)
+  content    String  @db.LongText
+  ip         String? @default("") @db.VarChar(50)
+  useragent  String? @default("") @db.VarChar(255)
+  created_at BigInt?
+
+  @@index([username], map: "name")
+}
+
+model archives {
+  id          Int             @id @default(autoincrement()) @db.UnsignedInt
+  user_id     Int             @default(0) @db.UnsignedInt
+  channel_id  Int             @default(0) @db.UnsignedInt
+  title       String?         @default("") @db.VarChar(255)
+  flag        String?         @default("") @db.VarChar(100)
+  style       String?         @default("") @db.VarChar(100)
+  image       String?         @default("") @db.VarChar(255)
+  seotitle    String?         @default("") @db.VarChar(255)
+  keywords    String?         @default("") @db.VarChar(255)
+  description String?         @default("") @db.VarChar(255)
+  tags        String?         @default("") @db.VarChar(255)
+  weigh       Int             @default(0)
+  views       Int             @default(0) @db.UnsignedInt
+  diyname     String?         @default("") @db.VarChar(100)
+  created_at  DateTime        @default(now())
+  updated_at  DateTime
+  publish_at  DateTime        @default(now())
+  delete_at   DateTime        @default(now())
+  status      archives_status @default(normal)
+
+  @@index([channel_id], map: "channel_id")
+  @@index([channel_id], map: "channel_id_2")
+  @@index([diyname], map: "diyname")
+  @@index([diyname], map: "diyname_2")
+  @@index([weigh, publish_at], map: "weigh")
+}
+
+model attachment {
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  category    String?  @default("") @db.VarChar(50)
+  admin_id    Int      @default(0) @db.UnsignedInt
+  user_id     Int      @default(0) @db.UnsignedInt
+  url         String?  @default("") @db.VarChar(255)
+  imagewidth  Int?     @default(0) @db.UnsignedInt
+  imageheight Int?     @default(0) @db.UnsignedInt
+  imagetype   String?  @default("") @db.VarChar(30)
+  imageframes Int      @default(0) @db.UnsignedInt
+  filename    String?  @default("") @db.VarChar(100)
+  filesize    Int      @default(0) @db.UnsignedInt
+  mimetype    String?  @default("") @db.VarChar(100)
+  extparam    String?  @default("") @db.VarChar(255)
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+  storage     String   @default("local") @db.VarChar(100)
+  sha1        String?  @default("") @db.VarChar(40)
+}
+
+model block {
+  id         Int          @id @default(autoincrement()) @db.UnsignedSmallInt
+  type       String?      @default("") @db.VarChar(30)
+  name       String?      @default("") @db.VarChar(50)
+  title      String?      @default("") @db.VarChar(100)
+  image      String?      @default("") @db.VarChar(255)
+  url        String?      @default("") @db.VarChar(255)
+  content    String?      @db.MediumText
+  parsetpl   Boolean?     @default(false)
+  weigh      Int?         @default(0)
+  created_at DateTime     @default(now())
+  updated_at DateTime
+  begin_at   DateTime
+  end_at     DateTime
+  status     block_status @default(normal)
+
+  @@index([name], map: "name")
+}
+
+model channel {
+  id           Int            @id @default(autoincrement()) @db.UnsignedInt
+  site_id      Int            @db.UnsignedInt
+  type         channel_type
+  parent_id    Int            @default(0) @db.UnsignedInt
+  name         String?        @default("") @db.VarChar(30)
+  image        String?        @default("") @db.VarChar(255)
+  flag         String?        @default("") @db.VarChar(100)
+  seotitle     String?        @default("") @db.VarChar(255)
+  keywords     String?        @default("") @db.VarChar(255)
+  description  String?        @default("") @db.VarChar(255)
+  diyname      String?        @unique(map: "diyname") @default("") @db.VarChar(100)
+  outlink      String?        @default("") @db.VarChar(255)
+  linktype     String?        @default("") @db.VarChar(100)
+  linkid       Int?           @default(0)
+  items        Int            @default(0) @db.UnsignedMediumInt
+  weigh        Int            @default(0)
+  channeltpl   String?        @default("") @db.VarChar(100)
+  listtpl      String?        @default("") @db.VarChar(100)
+  showtpl      String?        @default("") @db.VarChar(100)
+  pagesize     Int            @default(0) @db.SmallInt
+  vip          Boolean?       @default(false)
+  listtype     Boolean?       @default(false)
+  iscontribute Boolean        @default(false)
+  isnav        Boolean        @default(true)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime
+  status       channel_status @default(normal)
+
+  @@index([parent_id], map: "parent_id")
+  @@index([type], map: "type")
+  @@index([weigh, id], map: "weigh")
+}
+
+model config {
+  id      Int     @id @default(autoincrement()) @db.UnsignedInt
+  name    String? @unique(map: "name") @default("") @db.VarChar(30)
+  group   String? @default("") @db.VarChar(30)
+  title   String? @default("") @db.VarChar(100)
+  tip     String? @default("") @db.VarChar(100)
+  type    String? @default("") @db.VarChar(30)
+  visible String? @default("") @db.VarChar(255)
+  value   String? @db.Text
+  content String? @db.Text
+  rule    String? @default("") @db.VarChar(100)
+  extend  String? @default("") @db.VarChar(255)
+  setting String? @default("") @db.VarChar(255)
+}
+
+model content {
+  id      Int     @id
+  content String  @db.LongText
+  author  String? @default("") @db.VarChar(50)
+}
+
+model diyform {
+  id          Int                 @id @default(autoincrement()) @db.UnsignedSmallInt
+  admin_id    Int?                @default(0) @db.UnsignedInt
+  name        String?             @default("") @db.Char(30)
+  title       String?             @db.VarChar(100)
+  seotitle    String?             @default("") @db.VarChar(255)
+  posttitle   String?             @default("") @db.VarChar(255)
+  keywords    String?             @db.VarChar(100)
+  description String?             @db.VarChar(255)
+  table       String?             @default("") @db.VarChar(50)
+  fields      String?             @db.Text
+  isguest     Boolean             @default(false)
+  needlogin   Boolean             @default(false)
+  isedit      Boolean?            @default(false)
+  iscaptcha   Boolean?            @default(false)
+  successtips String?             @db.VarChar(255)
+  redirecturl String?             @db.VarChar(255)
+  posttpl     String?             @default("") @db.VarChar(50)
+  listtpl     String?             @default("") @db.VarChar(50)
+  showtpl     String?             @default("") @db.VarChar(50)
+  diyname     String?             @db.VarChar(100)
+  usermode    diyform_usermode?   @default(all)
+  statusmode  diyform_statusmode? @default(all)
+  created_at  DateTime            @default(now())
+  updated_at  DateTime
+  setting     String?             @db.VarChar(1500)
+  status      diyform_status?     @default(hidden)
+
+  @@index([diyname], map: "diyname")
+}
+
+model fields {
+  id           Int           @id @default(autoincrement()) @db.UnsignedSmallInt
+  source       String?       @default("") @db.VarChar(30)
+  source_id    Int           @default(0)
+  name         String?       @default("") @db.Char(30)
+  type         String?       @default("") @db.VarChar(30)
+  title        String?       @default("") @db.VarChar(30)
+  content      String?       @db.Text
+  filterlist   String?       @db.Text
+  defaultvalue String?       @default("") @db.VarChar(100)
+  rule         String?       @default("") @db.VarChar(100)
+  msg          String?       @default("") @db.VarChar(100)
+  ok           String?       @default("") @db.VarChar(100)
+  tip          String?       @default("") @db.VarChar(100)
+  decimals     Boolean?
+  length       Int?          @db.MediumInt
+  minimum      Int?          @db.SmallInt
+  maximum      Int           @default(0) @db.UnsignedSmallInt
+  extend       String?       @default("") @db.VarChar(255)
+  setting      String?       @default("") @db.VarChar(1500)
+  favisible    String?       @default("") @db.VarChar(1500)
+  weigh        Int           @default(0)
+  created_at   DateTime      @default(now())
+  updated_at   DateTime
+  isorder      Boolean       @default(false)
+  iscontribute Boolean       @default(false)
+  isfilter     Boolean       @default(false)
+  status       fields_status
+
+  @@index([source], map: "source")
+  @@index([source_id], map: "source_id")
+}
+
+model friendlink {
+  id         Int                @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?
+  title      String?            @default("") @db.VarChar(255)
+  image      String?            @default("") @db.VarChar(1500)
+  website    String?            @default("") @db.VarChar(100)
+  created_at DateTime           @default(now())
+  updated_at DateTime
+  memo       String?            @default("") @db.VarChar(1500)
+  status     friendlink_status? @default(hidden)
+  intro      String?            @default("") @db.VarChar(255)
+
+  @@index([created_at], map: "created_at")
+  @@index([user_id], map: "user_id")
+}
+
+model invite {
+  id              Int      @id @default(autoincrement()) @db.UnsignedInt
+  user_id         Int      @default(0) @db.UnsignedInt
+  invited_user_id Int      @default(0) @db.UnsignedInt
+  level           Int      @default(0) @db.UnsignedInt
+  created_at      DateTime @default(now())
+
+  @@index([user_id], map: "user_id")
+}
+
+model message {
+  id         Int             @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?
+  name       String?         @default("") @db.VarChar(50)
+  telephone  String?         @default("") @db.VarChar(100)
+  qq         String?         @default("") @db.VarChar(30)
+  content    String?         @db.LongText
+  os         message_os?     @default(windows)
+  language   String?         @default("")
+  address    String?         @default("") @db.VarChar(255)
+  category   String?         @default("") @db.VarChar(255)
+  memo       String?         @default("") @db.VarChar(255)
+  image      String?         @default("") @db.VarChar(500)
+  created_at DateTime        @default(now())
+  updated_at DateTime
+  status     message_status? @default(normal)
+
+  @@index([created_at], map: "created_at")
+  @@index([user_id], map: "user_id")
+}
+
+model order {
+  id          Int           @id @default(autoincrement()) @db.UnsignedInt
+  orderid     String?       @default("") @db.VarChar(50)
+  user_id     Int?          @default(0) @db.UnsignedInt
+  archives_id Int?          @default(0) @db.UnsignedInt
+  title       String?       @db.VarChar(100)
+  amount      Decimal?      @default(0.00) @db.Decimal(10, 2)
+  payamount   Decimal?      @default(0.00) @db.Decimal(10, 2)
+  paytype     String?       @db.VarChar(50)
+  paytime     BigInt?
+  method      String?       @default("") @db.VarChar(100)
+  ip          String?       @db.VarChar(50)
+  useragent   String?       @db.VarChar(255)
+  memo        String?       @db.VarChar(255)
+  created_at  DateTime      @default(now())
+  updated_at  DateTime
+  status      order_status? @default(created)
+
+  @@index([archives_id], map: "archives_id")
+  @@index([orderid], map: "orderid")
+  @@index([orderid], map: "orderid_2")
+}
+
+model page {
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  category_id Int      @default(0)
+  admin_id    Int?     @default(0) @db.UnsignedInt
+  type        String?  @default("") @db.VarChar(50)
+  title       String?  @default("") @db.VarChar(50)
+  seotitle    String?  @default("") @db.VarChar(255)
+  keywords    String?  @default("") @db.VarChar(255)
+  description String?  @default("") @db.VarChar(255)
+  flag        String?  @default("") @db.VarChar(100)
+  image       String?  @default("") @db.VarChar(255)
+  content     String?  @db.LongText
+  icon        String?  @default("") @db.VarChar(50)
+  views       Int      @default(0) @db.UnsignedInt
+  likes       Int      @default(0) @db.UnsignedInt
+  dislikes    Int      @default(0) @db.UnsignedInt
+  comments    Int      @default(0) @db.UnsignedInt
+  diyname     String?  @default("") @db.VarChar(100)
+  showtpl     String?  @default("") @db.VarChar(50)
+  iscomment   Boolean? @default(true)
+  parsetpl    Boolean? @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+  delete_time DateTime
+  weigh       Int      @default(0)
+  status      String?  @default("") @db.VarChar(30)
+
+  @@index([diyname], map: "diyname")
+  @@index([diyname], map: "diyname_2")
+  @@index([type], map: "type")
+}
+
+model recharge_order {
+  id         Int                    @id @default(autoincrement()) @db.UnsignedInt
+  orderid    String?                @db.VarChar(100)
+  user_id    Int?                   @default(0) @db.UnsignedInt
+  amount     Float?                 @default(0)
+  payamount  Float?                 @default(0)
+  paytype    String?                @db.VarChar(50)
+  paytime    BigInt?
+  ip         String?                @db.VarChar(50)
+  useragent  String?                @db.VarChar(255)
+  memo       String?                @db.VarChar(255)
+  created_at DateTime               @default(now())
+  updated_at DateTime
+  status     recharge_order_status? @default(created)
+}
+
+model search_log {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  keywords   String?  @unique(map: "keywords") @default("") @db.VarChar(100)
+  nums       Int?     @default(0) @db.UnsignedInt
+  created_at DateTime @default(now())
+  status     String?  @default("hidden") @db.VarChar(50)
+}
+
+model sites {
+  id           Int           @id @default(autoincrement()) @db.UnsignedInt
+  user_id      Int?          @db.UnsignedInt
+  name         String?       @unique(map: "Sites_name_key") @default("") @db.VarChar(30)
+  bd_appId     String?       @default("") @db.VarChar(100)
+  bd_appKey    String?       @default("") @db.VarChar(100)
+  bd_appSecret String?       @db.VarChar(100)
+  wx_appId     String?       @db.VarChar(100)
+  wx_appKey    String?       @db.VarChar(100)
+  created_at   DateTime      @default(now())
+  expired_at   DateTime?
+  status       sites_status?
+
+  @@index([user_id], map: "user_id")
+}
+
+model sites_config {
+  id               Int      @id @default(autoincrement()) @db.UnsignedInt
+  site_id          Int?     @unique @default(0) @db.UnsignedInt
+  site_notice      String?  @db.VarChar(100)
+  seo_title        String?  @db.VarChar(100)
+  seo_keywords     String?  @db.VarChar(100)
+  seo_description  String?  @db.VarChar(200)
+  logo             String?  @db.VarChar(100)
+  mail_smtp_host   String?  @default("smtp.qq.com") @db.VarChar(100)
+  mail_smtp_port   Int?     @default(465)
+  mail_smtp_user   String?  @db.VarChar(100)
+  mail_smtp_pass   String?  @db.VarChar(100)
+  mail_verify_type String?  @default("[\"无\",\"TLS\",\"SSL\"]") @db.VarChar(100)
+  icp              String?  @db.VarChar(50)
+  created_at       DateTime @default(now())
+  updated_at       DateTime
+}
+
+model sms {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  event      String?  @default("") @db.VarChar(30)
+  phone     String?  @default("") @db.VarChar(20)
+  code       String?  @default("") @db.VarChar(10)
+  times      Int      @default(0) @db.UnsignedInt
+  ip         String?  @default("") @db.VarChar(30)
+  created_at DateTime @default(now())
+}
+
+model systemmenu {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  parent_id  Int      @default(0) @db.UnsignedInt
+  group_id   Int      @db.UnsignedInt
+  title      String   @db.VarChar(50)
+  name       String   @db.VarChar(50)
+  path       String   @db.VarChar(100)
+  component  String   @db.VarChar(100)
+  icon       String?  @db.VarChar(50)
+  permission String?  @db.VarChar(100)
+  type       Int      @default(0)
+  sort       Int      @default(0)
+  status     Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime
+
+  @@index([group_id], map: "SystemMenu_group_id_idx")
+  @@index([parent_id], map: "SystemMenu_parent_id_idx")
+}
+
+model tag {
+  id          Int         @id @default(autoincrement()) @db.UnsignedInt
+  name        String?     @unique(map: "name") @default("") @db.VarChar(50)
+  nums        Int         @default(0) @db.UnsignedInt
+  seotitle    String?     @default("") @db.VarChar(100)
+  keywords    String?     @db.VarChar(255)
+  description String?     @db.VarChar(255)
+  views       Int?
+  autolink    Boolean?    @default(false)
+  created_at  DateTime    @default(now())
+  updated_at  DateTime
+  status      tag_status? @default(normal)
+
+  @@index([nums], map: "nums")
+}
+
+model taggable {
+  id          Int      @id @default(autoincrement()) @db.UnsignedInt
+  tag_id      Int?
+  archives_id Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime
+
+  @@index([archives_id], map: "archives_id")
+  @@index([tag_id], map: "tag_id")
+}
+
+model user {
+  id                  Int       @id @default(autoincrement()) @db.UnsignedInt
+  group_id            Int       @default(0) @db.UnsignedInt
+  username            String?   @unique @default("") @db.VarChar(32)
+  nickname            String?   @default("") @db.VarChar(50)
+  password            String?   @default("") @db.VarChar(100)
+  email               String?   @unique @default("") @db.VarChar(100)
+  phone               String?   @default("") @db.VarChar(11)
+  avatar              String?   @default("") @db.VarChar(255)
+  reset_token         String?   @db.VarChar(100)
+  reset_token_expires DateTime?
+  vip                 Boolean?  @default(false)
+  money               Decimal   @default(0.00) @db.Decimal(10, 2)
+  score               Int       @default(0)
+  prev_login_at       DateTime?
+  last_login_at       DateTime?
+  login_ip            String?   @default("") @db.VarChar(50)
+  login_failure       Boolean   @default(false)
+  login_failure_at    DateTime?
+  created_at          DateTime  @default(now())
+  updated_at          DateTime
+  status              String?   @default("") @db.VarChar(30)
+
+  @@index([email], map: "email")
+  @@index([phone], map: "phone")
+  @@index([username], map: "username")
+}
+
+model user_group {
+  id         Int                @id @default(autoincrement()) @db.UnsignedInt
+  name       String?            @default("") @db.VarChar(50)
+  rules      Json
+  created_at DateTime           @default(now())
+  updated_at DateTime
+  status     user_group_status?
+}
+
+model user_money_log {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int      @default(0) @db.UnsignedInt
+  money      Decimal  @default(0.00) @db.Decimal(10, 2)
+  before     Decimal  @default(0.00) @db.Decimal(10, 2)
+  after      Decimal  @default(0.00) @db.Decimal(10, 2)
+  memo       String?  @default("") @db.VarChar(255)
+  created_at DateTime @default(now())
+  updated_at DateTime
+}
+
+model user_rule {
+  id         Int               @id @default(autoincrement()) @db.UnsignedInt
+  pid        Int?
+  name       String?           @db.VarChar(50)
+  title      String?           @default("") @db.VarChar(50)
+  remark     String?           @db.VarChar(100)
+  ismenu     Boolean?
+  created_at DateTime          @default(now())
+  updated_at DateTime
+  weigh      Int?              @default(0)
+  status     user_rule_status?
+}
+
+model user_score_log {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int      @default(0) @db.UnsignedInt
+  score      Int      @default(0)
+  before     Int      @default(0)
+  after      Int      @default(0)
+  memo       String?  @default("") @db.VarChar(255)
+  created_at DateTime @default(now())
+}
+
+model vip {
+  id         Int         @id @default(autoincrement()) @db.UnsignedInt
+  level      Boolean?    @unique(map: "level") @default(false)
+  group_id   Int?        @default(0) @db.UnsignedInt
+  name       String?     @default("") @db.VarChar(100)
+  label      String?     @default("") @db.VarChar(100)
+  intro      String?     @default("") @db.VarChar(255)
+  image      String?     @default("") @db.VarChar(255)
+  icon       String?     @default("") @db.VarChar(100)
+  content    String?     @db.Text
+  price      Decimal?    @default(0.00) @db.Decimal(10, 2)
+  pricedata  String?     @db.Text
+  rightdata  String?     @db.Text
+  sales      Int?        @default(0) @db.UnsignedInt
+  created_at DateTime    @default(now())
+  status     vip_status? @default(normal)
+}
+
+model vip_order {
+  id         Int               @id @default(autoincrement()) @db.UnsignedInt
+  orderid    String?           @default("") @db.VarChar(50)
+  user_id    Int?              @default(0) @db.UnsignedInt
+  vip_id     Int?              @default(0) @db.UnsignedInt
+  record_id  Int?              @default(0) @db.UnsignedInt
+  title      String?           @db.VarChar(100)
+  amount     Decimal?          @default(0.00) @db.Decimal(10, 2)
+  payamount  Decimal?          @default(0.00) @db.Decimal(10, 2)
+  paytype    String?           @db.VarChar(50)
+  paytime    BigInt?
+  method     String?           @default("") @db.VarChar(100)
+  ip         String?           @db.VarChar(50)
+  useragent  String?           @db.VarChar(255)
+  openid     String?           @default("") @db.VarChar(100)
+  memo       String?           @default("") @db.VarChar(255)
+  created_at DateTime          @default(now())
+  updated_at DateTime
+  status     vip_order_status? @default(created)
+
+  @@index([orderid], map: "orderid")
+}
+
+model vip_record {
+  id         Int                @id @default(autoincrement()) @db.UnsignedInt
+  user_id    Int?               @default(0) @db.UnsignedInt
+  vip_id     Int?               @default(0) @db.UnsignedInt
+  level      Int?               @default(0) @db.UnsignedInt
+  days       Int?               @default(0) @db.UnsignedInt
+  amount     Decimal?           @default(0.00) @db.Decimal(10, 2)
+  created_at DateTime           @default(now())
+  updated_at DateTime
+  expired_at BigInt?
+  status     vip_record_status? @default(created)
+
+  @@index([user_id], map: "user_id")
+}
+
+model permission {
+  id         Int      @id @default(autoincrement())
+  parentId   Int?     @default(0)
+  path       String?  @db.VarChar(255)
+  layout     String?  @db.VarChar(255)
+  component  String?  @db.VarChar(255)
+  redirect   String?  @db.VarChar(255)
+  name       String    @db.VarChar(255)
+  hidden     Boolean   @default(false) @db.TinyInt
+  order      Int?     @default(0)
+  title      String    @default("") @db.VarChar(100)
+  icon       String?   @db.VarChar(255)
+  keepAlive  Boolean?  @default(false) @db.TinyInt
+  roles      Json?     @default("[\"admin\",\"editor\"]") 
+  method     String?   @db.VarChar(255)
+  alwaysShow Boolean    @default(true) @db.TinyInt
+
+  @@index([parentId], map: "parentId_index")
+}
+
+enum channel_type {
+  channel
+  page
+  link
+  list
+}
+
+enum user_group_status {
+  normal
+  hidden
+}
+
+enum message_os {
+  windows
+  mac
+}
+
+enum friendlink_status {
+  normal
+  hidden
+  rejected
+}
+
+enum user_rule_status {
+  normal
+  hidden
+}
+
+enum vip_record_status {
+  created
+  active
+  expired
+  finished
+  canceled
+  locked
+}
+
+enum sites_status {
+  nopay
+  normal
+  expired
+}
+
+enum tag_status {
+  normal
+  hidden
+}
+
+enum recharge_order_status {
+  created
+  paid
+  expired
+}
+
+enum block_status {
+  normal
+  hidden
+}
+
+enum message_status {
+  normal
+  hidden
+  rejected
+}
+
+enum vip_status {
+  normal
+  hidden
+  pulloff
+}
+
+enum order_status {
+  created
+  paid
+  expired
+}
+
+enum vip_order_status {
+  created
+  paid
+  expired
+}
+
+enum archives_status {
+  normal
+  hidden
+  draft
+  prepare
+  rejected
+  pulloff
+}
+
+enum diyform_usermode {
+  all
+  user
+}
+
+enum diyform_statusmode {
+  all
+  normal
+  hidden
+}
+
+enum diyform_status {
+  normal
+  hidden
+}
+
+enum channel_status {
+  normal
+  hidden
+}
+
+enum fields_status {
+  normal
+  hidden
+}
