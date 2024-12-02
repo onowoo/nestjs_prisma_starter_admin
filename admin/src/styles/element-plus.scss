@@ -4,7 +4,9 @@
 .el-card {
   background-color: var(--el-bg-color);
 }
-
+.el-table__placeholder {
+  display: none;
+}
 // 分页
 .el-pagination {
   // 参考 Bootstrap 的响应式设计 WIDTH = 768

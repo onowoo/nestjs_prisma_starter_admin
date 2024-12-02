@@ -1,32 +1,27 @@
 export interface CreateOrUpdateTableRequestData {
   id?: string
-  username?: string
-  password?: string
-  email?: string
-  phone?: string
-  nickname?: string
-  avatar?: string
-}
-
-export interface TableRequestData {
-  /** 当前页码 */
-  currentPage: number
-  /** 查询条数 */
-  size: number
-  /** 查询参数：用户名 */
-  username?: string
-  /** 查询参数：手机号 */
-  phone?: string
-}
-
-export interface TableData {
-  id: number
-  parentId: number
+  parentId?: string
   path: string
   name: string
   title: string
-  roles: JSON
-  order: number
+  roles: string[]
+  order: string
+  component?: string
+  redirect?: string
+  icon?: string
+  keepAlice?: boolean
+  hidden?: boolean
+  alwaysShow?: boolean
+}
+
+export interface TableData {
+  id?: string
+  parentId?: string
+  path: string
+  name: string
+  title: string
+  roles: string[]
+  order: string
   component?: string
   redirect?: string
   icon?: string
@@ -36,16 +31,17 @@ export interface TableData {
 }
 
 export type TableResponseData = ApiResponseData<{
+  id?: string
+  parentId?: string
   path: string
+  name: string
+  title: string
+  roles: string[]
+  order: string
   component?: string
   redirect?: string
-  name: string
-  meta: {
-    order: number
-    title: string
-    roles: JSON
-    icon: string
-    keepAlice: boolean
-    hidden: boolean
-  }
+  icon?: string
+  keepAlice?: boolean
+  hidden?: boolean
+  alwaysShow?: boolean
 }>
