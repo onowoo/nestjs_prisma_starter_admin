@@ -1,10 +1,10 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, ForbiddenException, Patch, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
-import { JwtAuthGuard } from '@/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { AdminGuard } from '../auth/guards/admin.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { CurrentUser } from '@/auth/decorators/current-user.decorator';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 

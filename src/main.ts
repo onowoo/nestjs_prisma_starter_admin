@@ -2,7 +2,6 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { CaptchaModule } from './captcha/captcha.module'
 import * as session from 'express-session';
 
 async function bootstrap() {

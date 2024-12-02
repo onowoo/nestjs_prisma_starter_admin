@@ -5,6 +5,7 @@ import { type RouteRecordRaw } from "vue-router"
 import { constantRoutes, dynamicRoutes } from "@/router"
 import { flatMultiLevelRoutes } from "@/router/helper"
 import routeSettings from "@/config/route"
+import { getTableDataApi } from "@/api/permission"
 
 const hasPermission = (roles: string[], route: RouteRecordRaw) => {
   const routeRoles = route.meta?.roles
@@ -31,6 +32,17 @@ export const usePermissionStore = defineStore("permission", () => {
   /** 有访问权限的动态路由 */
   const addRoutes = ref<RouteRecordRaw[]>([])
 
+  const dynamicTree = ref<any>([])
+  // const dynamicRoutes = ref<RouteRecordRaw[]>([])
+
+  /** 获取动态路由 */
+  const getPermissions = async () => {
+    const res = await getTableDataApi()
+    if (res.code === 0) {
+      dynamicTree.value = res.data
+    }
+  }
+
   /** 根据角色生成可访问的 Routes（可访问的路由 = 常驻路由 + 有访问权限的动态路由） */
   const setRoutes = (roles: string[]) => {
     const accessedRoutes = filterDynamicRoutes(dynamicRoutes, roles)
@@ -47,7 +59,7 @@ export const usePermissionStore = defineStore("permission", () => {
     addRoutes.value = routeSettings.thirdLevelRouteCache ? flatMultiLevelRoutes(accessedRoutes) : accessedRoutes
   }
 
-  return { routes, addRoutes, setRoutes, setAllRoutes }
+  return { routes, addRoutes, dynamicTree, getPermissions, setRoutes, setAllRoutes }
 })
 
 /**

@@ -3,9 +3,9 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { RegisterDto } from './dto/register.dto';
 import * as bcrypt from 'bcrypt';
-import { MailService } from '@/mail/mail.service';
+import { MailService } from '../mail/mail.service';
 import { LoginDto } from './dto/login.dto';
-import { CaptchaService } from '@/captcha/captcha.service';
+import { CaptchaService } from '../captcha/captcha.service';
 
 @Injectable()
 export class AuthService {
