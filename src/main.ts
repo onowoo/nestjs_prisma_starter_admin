@@ -5,6 +5,7 @@ import { ValidationPipe } from '@nestjs/common';
 import * as session from 'express-session';
 
 async function bootstrap() {
+  console.log("Starting NestJS application...");
   const app = await NestFactory.create(AppModule);
 
   // 配置会话中间件
@@ -42,5 +43,6 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('api')
   await app.listen(3000);
+  console.log("NestJS application is running on port 3000");
 }
 bootstrap();

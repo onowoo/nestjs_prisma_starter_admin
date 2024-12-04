@@ -2,7 +2,7 @@ import { ref } from "vue"
 import { pinia } from "@/store"
 import { defineStore } from "pinia"
 import { type RouteRecordRaw } from "vue-router"
-import { constantRoutes, dynamicRoutes } from "@/router"
+import { constantRoutes } from "@/router"
 import { flatMultiLevelRoutes } from "@/router/helper"
 import routeSettings from "@/config/route"
 import { getTableDataApi } from "@/api/permission"
@@ -36,22 +36,56 @@ export const usePermissionStore = defineStore("permission", () => {
   // const dynamicRoutes = ref<RouteRecordRaw[]>([])
 
   /** 获取动态路由 */
-  const getPermissions = async () => {
-    const res = await getTableDataApi()
-    if (res.code === 0) {
-      dynamicTree.value = res.data
-    }
-  }
+  /** 获取动态路由 */
 
+  // 新增的递归函数，用于格式化路由
+  const formatRoute = (route: any) => {
+    const componentLoader =
+      route.component === "Layouts"
+        ? () =>
+            import("@/layouts/index.vue").catch((error) => {
+              console.log(error)
+            })
+        : () =>
+            import(route.component).catch((err) => {
+              console.error(`Failed to load component at ${route.component}:`, err)
+              return import("@/views/error-page/404.vue") // 你可以返回一个404组件作为默认
+            })
+
+    return {
+      path: route.path,
+      component: componentLoader,
+      redirect: route.redirect,
+      name: route.name,
+      meta: {
+        order: route.order,
+        title: route.title,
+        roles: route.roles,
+        svgIcon: route.icon,
+        alwaysShow: route.alwaysShow,
+        hidden: route.hidden,
+        keepAlive: route.keepAlive
+      },
+      children: route.children ? route.children.map(formatRoute) : [], // 递归处理子路由
+      hasChildren: route.children && route.children.length > 0
+    } as RouteRecordRaw
+  }
   /** 根据角色生成可访问的 Routes（可访问的路由 = 常驻路由 + 有访问权限的动态路由） */
-  const setRoutes = (roles: string[]) => {
-    const accessedRoutes = filterDynamicRoutes(dynamicRoutes, roles)
-    _set(accessedRoutes)
+  const setRoutes = async (roles: string[]) => {
+    const res = await getTableDataApi()
+    if (res.code === 0 && Array.isArray(res.data)) {
+      // 处理返回的数据以匹配 dynamicTree 的结构
+      dynamicTree.value = res.data.map((route: any) => {
+        return formatRoute(route)
+      })
+      const accessedRoutes = filterDynamicRoutes(dynamicTree.value, roles)
+      _set(accessedRoutes)
+    }
   }
 
   /** 所有路由 = 所有常驻路由 + 所有动态路由 */
   const setAllRoutes = () => {
-    _set(dynamicRoutes)
+    _set(dynamicTree.value)
   }
 
   const _set = (accessedRoutes: RouteRecordRaw[]) => {
@@ -59,7 +93,7 @@ export const usePermissionStore = defineStore("permission", () => {
     addRoutes.value = routeSettings.thirdLevelRouteCache ? flatMultiLevelRoutes(accessedRoutes) : accessedRoutes
   }
 
-  return { routes, addRoutes, dynamicTree, getPermissions, setRoutes, setAllRoutes }
+  return { routes, addRoutes, dynamicTree, setRoutes, setAllRoutes }
 })
 
 /**

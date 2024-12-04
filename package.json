@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "concurrently \"pnpm start\" \"cd admin && pnpm dev\" \"ts-node-dev --respawn --transpile-only src/main.ts\" \"npx prisma studio\" --debug",
+    "dev": "concurrently \"pnpm start\" \"cd admin && pnpm dev\" \"npx prisma studio\" --debug",
     "build": "concurrently \"nest build\" \"cd admin && pnpm build\"",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",

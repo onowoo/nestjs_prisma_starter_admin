@@ -41,8 +41,12 @@ router.beforeEach(async (to, _from, next) => {
     }
     // 注意：角色必须是一个数组！ 例如: ["admin"] 或 ["developer", "editor"]
     const roles = userStore.roles
+    if (routeSettings.dynamic) {
+      permissionStore.setRoutes(roles)
+    } else {
+      permissionStore.setAllRoutes()
+    }
     // 生成可访问的 Routes
-    routeSettings.dynamic ? permissionStore.setRoutes(roles) : permissionStore.setAllRoutes()
     // 将 "有访问权限的动态路由" 添加到 Router 中
     permissionStore.addRoutes.forEach((route) => router.addRoute(route))
     // 设置 replace: true, 因此导航将不会留下历史记录

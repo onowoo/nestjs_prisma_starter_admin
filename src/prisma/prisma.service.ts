@@ -67,20 +67,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
         // 插入 permission 数据
         const permissionsData = [
-            {
-              parentId: 0,
-              path: "/",
-              name: "Dashboard",
-              title: "控制台",
-              roles: ["admin", "editor"],
-              order: 9,
-              component: "@/views/dashboard/index.vue",
-              redirect: "/dashboard",
-              icon: "dashboard",
-              keepAlive: true,
-              hidden: false,
-              alwaysShow: true,
-            },
           {
               parentId: 0,
               path: "/system",
