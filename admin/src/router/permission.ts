@@ -42,7 +42,7 @@ router.beforeEach(async (to, _from, next) => {
     // 注意：角色必须是一个数组！ 例如: ["admin"] 或 ["developer", "editor"]
     const roles = userStore.roles
     if (routeSettings.dynamic) {
-      permissionStore.setRoutes(roles)
+      await permissionStore.setRoutes(roles)
     } else {
       permissionStore.setAllRoutes()
     }

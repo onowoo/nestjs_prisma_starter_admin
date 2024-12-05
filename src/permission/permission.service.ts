@@ -14,10 +14,22 @@ export class PermissionService {
             return allPermissions
                 .filter(item => item.parentId === parentId) // 根据 parentId 过滤
                 .sort((a, b) => b.order - a.order) // 根据 order 排序
-                .map(item => ({
-                    ...item,
-                    children: buildMenuTree(item.id) // 递归构建子菜单
-                }));
+                .map(item => {
+                    const { alwaysShow,roles, hidden, icon, keepAlive, order, title, ...rest } = item; // 移除字段
+                    return {
+                        ...rest, // 保留剩余字段
+                        meta: { // 新增 meta 对象
+                            alwaysShow,
+                            hidden,
+                            svgIcon: icon,
+                            keepAlive,
+                            order,
+                            title,
+                            roles
+                        },
+                        children: buildMenuTree(item.id) // 递归构建子菜单
+                    };
+                });
         }
         
         const tree = buildMenuTree(0)

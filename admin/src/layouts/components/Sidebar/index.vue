@@ -17,6 +17,7 @@ const v3SidebarMenuActiveTextColor = getCssVar("--v3-sidebar-menu-active-text-co
 const { isMobile } = useDevice()
 const { isLeft, isTop } = useLayoutMode()
 const route = useRoute()
+
 const appStore = useAppStore()
 const permissionStore = usePermissionStore()
 const settingsStore = useSettingsStore()
@@ -29,7 +30,6 @@ const activeMenu = computed(() => {
   return activeMenu ? activeMenu : path
 })
 const noHiddenRoutes = computed(() => permissionStore.routes.filter((item) => !item.meta?.hidden))
-console.log(noHiddenRoutes)
 
 const isCollapse = computed(() => !appStore.sidebar.opened)
 const isLogo = computed(() => isLeft.value && settingsStore.showLogo)

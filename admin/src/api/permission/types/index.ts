@@ -6,7 +6,7 @@ export interface CreateOrUpdateTableRequestData {
   title: string
   roles: string[]
   order: string
-  component?: string
+  component?: any
   redirect?: string
   icon?: string
   keepAlice?: boolean
@@ -22,7 +22,7 @@ export interface TableData {
   title: string
   roles: string[]
   order: string
-  component?: string
+  component?: any
   redirect?: string
   icon?: string
   keepAlice?: boolean
@@ -38,7 +38,7 @@ export type TableResponseData = ApiResponseData<{
   title: string
   roles: string[]
   order: string
-  component?: string
+  component?: any
   redirect?: string
   icon?: string
   keepAlice?: boolean
