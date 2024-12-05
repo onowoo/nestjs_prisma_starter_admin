@@ -67,7 +67,7 @@ const resolvePath = (routePath: string) => {
   <el-sub-menu v-else :index="resolvePath(props.item.path)" teleported>
     <template #title>
       <SvgIcon v-if="props.item.meta?.svgIcon" :name="props.item.meta.svgIcon" />
-      <span v-if="props.item.meta?.title">{{ props.item.meta.title }}</span>
+      <span v-if="props.item.meta?.title">{{ props.item.meta.title }}{{ 22 }}</span>
     </template>
     <template v-if="props.item.children">
       <SidebarItem

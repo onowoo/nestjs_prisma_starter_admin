@@ -48,6 +48,8 @@ router.beforeEach(async (to, _from, next) => {
     }
     // 生成可访问的 Routes
     // 将 "有访问权限的动态路由" 添加到 Router 中
+    console.log(permissionStore.addRoutes)
+
     permissionStore.addRoutes.forEach((route) => router.addRoute(route))
     // 设置 replace: true, 因此导航将不会留下历史记录
     next({ ...to, replace: true })
